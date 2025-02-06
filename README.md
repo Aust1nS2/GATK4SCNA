@@ -56,16 +56,16 @@ however are different.
 ##### Genome: [GRCh38.d1.vd1](https://gdc.cancer.gov/about-data/gdc-data-processing/gdc-reference-files)
 
 The WES and WGS versions of this pipeline rely upon the same genome.
-
+```
     /storage1/fs1/dinglab/Active/Projects/austins2/references/GRCh38.d1.vd1/GRCh38.d1.vd1.fa
-
+```
 ##### Genome dictionary
 
 The WES and WGS versions of this pipeline rely upon the same genome
 dictionary.
-
+```
     /storage1/fs1/dinglab/Active/Projects/austins2/references/GRCh38.d1.vd1/GRCh38.d1.vd1.dict
-
+```
 ##### Target Interval List
 
 There are three versions of the target interval list file that I have
@@ -98,122 +98,92 @@ such a case there are 3 options:
 1.  Repeat these steps with your target bed file
     1.  convert the bed file to an interval list using
         [Picard](https://broadinstitute.github.io/picard/)
-
-<!-- -->
-
-    java -jar picard.jar BedToIntervalList
-        I=input.bed
-        O=list.interval_list
-        SD=reference_sequence.dict
-
-::#
-
-<li value="2">
-
-Preprocess the intervals to prepare for coverage collection with GATK4
-[1](https://gatk.broadinstitute.org/hc/en-us/articles/360050815612-PreprocessIntervals)
-
-</li>
-
-    gatk PreprocessIntervals \
-        -L targets_C.interval_list \
-        -R /gatk/ref/Homo_sapiens_assembly38.fasta \
-        --bin-length 0 \
-        --interval-merging-rule OVERLAPPING_ONLY \
-        -O sandbox/targets_C.preprocessed.interval_list
-
-:::#
-
-<li value="1">
-
-The commands used for the IDT WES bed file in the docker were:
-
-</li>
-
-    $ bsub -q research-hpc -n 1 -R "select[mem>30000] rusage[mem=30000]" -M 30000000 -a 'docker(registry.gsc.wustl.edu/genome/genome_perl_environment)' \
-    -oo /gscmnt/gc2521/dinglab/austins2/tools/GATK4SCNA/db/logs/IDTxGEN_bed_to_interval_list.log \
-    /gscmnt/gc2521/dinglab/austins2/software/jre1.8.0_152/bin/java -jar \
-    /gscmnt/gc2521/dinglab/austins2/software/picard.jar BedToIntervalList \
-        I=IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed \
-        O=IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed.interval_list \
-        SD=/gscmnt/gc7202/dinglab/common/Reference/A_Reference/GRCh38.d1.vd1/GRCh38.d1.vd1.dict
-
-    $ bsub -q research-hpc -n 1 -R "select[mem>30000] rusage[mem=30000]" -M 30000000 -a 'docker(registry.gsc.wustl.edu/genome/genome_perl_environment)' \
-    -oo /gscmnt/gc2521/dinglab/austins2/tools/GATK4SCNA/db/logs/IDTxGEN_preprocessed_interval_list.log \
-    /gscmnt/gc2521/dinglab/austins2/software/jre1.8.0_152/bin/java -jar \
-    /gscmnt/gc2521/dinglab/austins2/software/gatk-4.1.2.0/gatk-package-4.1.2.0-local.jar PreprocessIntervals \
-        -L IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed.interval_list  \
-        -R /gscmnt/gc7202/dinglab/common/Reference/A_Reference/GRCh38.d1.vd1/GRCh38.d1.vd1.fa \
-        --bin-length 0 \
-        --interval-merging-rule OVERLAPPING_ONLY \
-        --padding 250 \
-        -O IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed.target.preprocessed.exome.interval_list
-
-1.  <li value="2">
-
-    Or for WES data launch the docker image using a mapped volume and
+        ```
+            java -jar picard.jar BedToIntervalList
+                I=input.bed
+                O=list.interval_list
+                SD=reference_sequence.dict
+        ```
+    2. Preprocess the intervals to prepare for coverage collection with GATK4
+       [1](https://gatk.broadinstitute.org/hc/en-us/articles/360050815612-PreprocessIntervals)
+        ```
+            gatk PreprocessIntervals \
+                -L targets_C.interval_list \
+                -R /gatk/ref/Homo_sapiens_assembly38.fasta \
+                --bin-length 0 \
+                --interval-merging-rule OVERLAPPING_ONLY \
+                -O sandbox/targets_C.preprocessed.interval_list
+        ```
+       1.  The commands used for the IDT WES bed file in the docker were:
+            ```
+                $ bsub -q research-hpc -n 1 -R "select[mem>30000] rusage[mem=30000]" -M 30000000 -a 'docker(registry.gsc.wustl.edu/genome/genome_perl_environment)' \
+                -oo /gscmnt/gc2521/dinglab/austins2/tools/GATK4SCNA/db/logs/IDTxGEN_bed_to_interval_list.log \
+                /gscmnt/gc2521/dinglab/austins2/software/jre1.8.0_152/bin/java -jar \
+                /gscmnt/gc2521/dinglab/austins2/software/picard.jar BedToIntervalList \
+                    I=IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed \
+                    O=IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed.interval_list \
+                    SD=/gscmnt/gc7202/dinglab/common/Reference/A_Reference/GRCh38.d1.vd1/GRCh38.d1.vd1.dict
+            
+                $ bsub -q research-hpc -n 1 -R "select[mem>30000] rusage[mem=30000]" -M 30000000 -a 'docker(registry.gsc.wustl.edu/genome/genome_perl_environment)' \
+                -oo /gscmnt/gc2521/dinglab/austins2/tools/GATK4SCNA/db/logs/IDTxGEN_preprocessed_interval_list.log \
+                /gscmnt/gc2521/dinglab/austins2/software/jre1.8.0_152/bin/java -jar \
+                /gscmnt/gc2521/dinglab/austins2/software/gatk-4.1.2.0/gatk-package-4.1.2.0-local.jar PreprocessIntervals \
+                    -L IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed.interval_list  \
+                    -R /gscmnt/gc7202/dinglab/common/Reference/A_Reference/GRCh38.d1.vd1/GRCh38.d1.vd1.fa \
+                    --bin-length 0 \
+                    --interval-merging-rule OVERLAPPING_ONLY \
+                    --padding 250 \
+                    -O IDT_xGen_Exome_Research_Panel_v1.removed_alt_chr.bed.target.preprocessed.exome.interval_list
+            ```
+2.  Or for WES data launch the docker image using a mapped volume and
     run the command
     `bash /code/src/0.run.gatk4scna.preprocessIntervals.sh -C /code/config/config.gatk4scna.compute1.ini -T /path/to/your/WES/target.bed`
 
-    </li>
-
-2.  Or for WGS data (no target bed file) data run this command:
+3.  Or for WGS data (no target bed file) data run this command:
     `bash /code/src/0.run.gatk4scna.preprocessIntervals.sh -C /code/config/config.gatk4scna.compute1.ini`
     and then filter out blacklisted regions of the genome. The commands
     used for the WGS interval list file in the docker were as follows:
+    1.  Generate an initial Picard style interval_list file that can be used to
+       filtered to generate the final interval list
 
-::#
-
-<li value="1">
-
-Generate an initial Picard style interval_list file that can be used to
-filtered to generate the final interval list
-
-</li>
-
-    $ bsub -G compute-dinglab -q dinglab -N -R 'select[mem>4GB] rusage[mem=4GB]' -M 4GB -J intervals-GRCh38 -a 'docker(austins2/gatk4scna:test5)' \
-        "bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/src/0.run.gatk4scna.preprocessIntervals.sh \
-        -C /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini \
-        -O /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/db"
-
-::#
-
-<li value="2">
-
-The ENCODE blacklist was downloaded from
-[github](https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hg38-blacklist.v2.bed.gz)
-and unzipped for use. These are regions in the human genome with "that
-have anomalous, unstructured, or high signal in next-generation
-sequencing experiments independent of cell line or experiment. The
-removal of the ENCODE blacklist is an essential quality measure when
-analyzing functional genomics data." for more information on the
-blacklist please see the following publication Amemiya, H.M., Kundaje,
-A. & Boyle, A.P. The ENCODE Blacklist: Identification of Problematic
-Regions of the Genome. Sci Rep 9, 9354 (2019).
-[2](https://doi.org/10.1038/s41598-019-45839-z)
-
-</li>
-
-::# Convert the blacklist bedfile to an interval list so it can be used
-for filtering
-
-    $ bsub -G compute-dinglab -q dinglab -N -R 'select[mem>4GB] rusage[mem=4GB]' -M 4GB -J blacklist \
-        -oo /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/db/hg38_blacklist_bed_to_interval_list.log \
-        -a 'docker(austins2/gatk4scna:test5)' \
-        "/code/jre1.8.0_152/bin/java -jar /storage1/fs1/dinglab/Active/Projects/austins2/software/picard.jar \
-        BedToIntervalList I=hg38-blacklist.v2.bed O=hg38-blacklist.v2.bed.interval_list \
-        SD=/storage1/fs1/dinglab/Active/Projects/austins2/references/GRCh38.d1.vd1/GRCh38.d1.vd1.dict"
-
-::# Filter out the blacklisted regions from the interval list
-
-    $ bsub -G compute-dinglab -q dinglab -N -R 'select[mem>4GB] rusage[mem=4GB]' -M 4GB -J blacklist_filter \
-        -oo /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/db/hg38_blacklist_filter.log \
-        -a 'docker(austins2/gatk4scna:test5)' \
-        "/code/jre1.8.0_152/bin/java -jar /gatk/gatk-package-4.1.9.0-SNAPSHOT-local.jar \
-        FilterIntervals -L GRCh38.d1.vd1.fa.targets.preprocessed.1k.interval_list -XL hg38-blacklist.v2.bed.interval_list \
-        --interval-merging-rule OVERLAPPING_ONLY \
-        -O GRCh38.d1.vd1.fa.targets.preprocessed.blacklist_filtered.1k.interval_list"
-
+        ```
+            $ bsub -G compute-dinglab -q dinglab -N -R 'select[mem>4GB] rusage[mem=4GB]' -M 4GB -J intervals-GRCh38 -a 'docker(austins2/gatk4scna:test5)' \
+                "bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/src/0.run.gatk4scna.preprocessIntervals.sh \
+                -C /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini \
+                -O /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/db"
+        
+        ```
+    2.  The ENCODE blacklist was downloaded from
+    [github](https://github.com/Boyle-Lab/Blacklist/blob/master/lists/hg38-blacklist.v2.bed.gz)
+    and unzipped for use. These are regions in the human genome with "that
+    have anomalous, unstructured, or high signal in next-generation
+    sequencing experiments independent of cell line or experiment. The
+    removal of the ENCODE blacklist is an essential quality measure when
+    analyzing functional genomics data." for more information on the
+    blacklist please see the following publication Amemiya, H.M., Kundaje,
+    A. & Boyle, A.P. The ENCODE Blacklist: Identification of Problematic
+    Regions of the Genome. Sci Rep 9, 9354 (2019).
+    [2](https://doi.org/10.1038/s41598-019-45839-z)
+    3.  Convert the blacklist bedfile to an interval list so it can be used
+        for filtering
+        ```
+            $ bsub -G compute-dinglab -q dinglab -N -R 'select[mem>4GB] rusage[mem=4GB]' -M 4GB -J blacklist \
+                -oo /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/db/hg38_blacklist_bed_to_interval_list.log \
+                -a 'docker(austins2/gatk4scna:test5)' \
+                "/code/jre1.8.0_152/bin/java -jar /storage1/fs1/dinglab/Active/Projects/austins2/software/picard.jar \
+                BedToIntervalList I=hg38-blacklist.v2.bed O=hg38-blacklist.v2.bed.interval_list \
+                SD=/storage1/fs1/dinglab/Active/Projects/austins2/references/GRCh38.d1.vd1/GRCh38.d1.vd1.dict"
+        ```
+    4.  Filter out the blacklisted regions from the interval list
+        ```
+            $ bsub -G compute-dinglab -q dinglab -N -R 'select[mem>4GB] rusage[mem=4GB]' -M 4GB -J blacklist_filter \
+                -oo /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/db/hg38_blacklist_filter.log \
+                -a 'docker(austins2/gatk4scna:test5)' \
+                "/code/jre1.8.0_152/bin/java -jar /gatk/gatk-package-4.1.9.0-SNAPSHOT-local.jar \
+                FilterIntervals -L GRCh38.d1.vd1.fa.targets.preprocessed.1k.interval_list -XL hg38-blacklist.v2.bed.interval_list \
+                --interval-merging-rule OVERLAPPING_ONLY \
+                -O GRCh38.d1.vd1.fa.targets.preprocessed.blacklist_filtered.1k.interval_list"
+        ```
 ##### Common Biallelic SNP database
 
 This input file contains a whitelist of SNPs that are commonly present
@@ -240,7 +210,7 @@ copy ratios from the segments to individual gene level calls to easily
 investigate CNVs at the individual gene levels. This file was generated
 from the [gencode.v34.annotated.gtf
 file](https://www.gencodegenes.org/human/release_34.html) as follows.
-
+```
     awk '{ if ($3 == "gene") { print } }' gencode.v34.annotation.gtf > gencode.v34.annotation.gene_filtered.gtf
     awk '{ if ($12 == "\"protein_coding\"\;") { print } }' gencode.v34.annotation.gene_filtered.gtf > gencode.v34.annotation.gene_filtered.protein_coding.gtf
     awk '{printf("%s\t%s\t%s\t%s\t%s\n",$1,$4,$5,$14,$10);}' gencode.v34.annotation.gene_filtered.protein_coding.gtf > gencode.v34.annotation.gene_filtered.protein_coding.pre-bed
@@ -248,38 +218,37 @@ file](https://www.gencodegenes.org/human/release_34.html) as follows.
     awk '{gsub(/;/, "", $5); printf("%s\t%s\t%s\t%s\t%s\n",$1,$2,$3,$4,$5)}' tmp.bed > tmp2.bed
     awk '{gsub(/"/, "", $4); printf("%s\t%s\t%s\t%s\t%s\n",$1,$2,$3,$4,$5)}' tmp2.bed > tmp3.bed
     awk -F '[.]' '{printf("%s\n",$1)}' gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID.bed > gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.bed
-
+```
 The intermediate files were filtered to include only gene symbols also
 recognized by HGNC and listed as protein-coding in the
 hgnc_complete_set_2020-07-01.txt file that was downloaded from the
 [https://www.genenames.org/download/archive/ HGNC complete set
 Archive](https://www.genenames.org/download/archive/_HGNC_complete_set_Archive "wikilink").
-
+```
     curl http://ftp.ebi.ac.uk/pub/databases/genenames/hgnc/archive/quarterly/tsv/hgnc_complete_set_2020-07-01.txt --output hgnc_complete_set_2020-07-01.txt
     grep "protein-coding gene" hgnc_complete_set_2020-07-01.txt > hgnc_2020-07-01_protein_coding.txt
-
+```
 A python script was then written and used to filter the gencode
 annotation file further to only those genes also listed in the HGNC
 annotation file. The python script used can be found at
 /code/db/remaking_protein-coding_v3/filtering_by_gene_symbol.py inside
 of the docker image.
-
+```
     conda activate py3.9
     python filtering_by_hgnc_gene_name.py hgnc_2020-07-01_protein_coding.txt gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.bed
-
+```
 ^This step generates two files:
-
-    gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.ensembl_100_missing_from_hgnc.txt
-    and
-    gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.txt
+`gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.ensembl_100_missing_from_hgnc.txt`
+and
+`gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.txt`
 
 Genes names that are listed more than once in the
-gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.txt
-were then identified using unique_values.py and saved to the file
-Gencode_unique.txt.
-
+`gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.txt`
+were then identified using `unique_values.py` and saved to the file
+`Gencode_unique.txt`.
+```
     python unique_values.py gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.txt > Gencode_unique.txt 
-
+```
 For each instance of a duplicate gene_name that is listed in the
 Gencode_unique.txt file only one of them was retained in the final
 output file. This was done by manually checking which emsembl gene_ID
@@ -288,9 +257,9 @@ the one present there. Duplicate gene names were not removed if the
 gene(s) were present on both the X and Y chromosomes but not on the
 autosomes. Then I removed the last column which contains the Ensembl
 IDs.
-
+```
     awk '{printf("%s\t%s\t%s\t%s\n",$1,$2,$3,$4);}' gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.duplicates_removed.txt > gencode.v34.annotation.gene_filtered.protein_coding.ensembl_ID_no_version.protein-coding_hgnc_filtered.duplicates_removed.ensembl_ID_removed.txt
-
+```
 What is left is only the chromosome, the start and stop positions, and
 the gene name in a bed file format.
 
@@ -372,9 +341,8 @@ specified then only those contigs will be included in the output plot.
 
 ## Example Commands
 
-<strong> WES un-paired (aka tumor-only) CNV calling example commands for
-compute1: </strong>
-
+**WES un-paired (aka tumor-only) CNV calling example commands for compute1:**
+```
     # Step 1 (precall)
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p precall -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_tonly/WES_allTumorBAM.list -M /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_tonly/WES_normalBAM.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_tonly/ -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
     # Step 2 (PON)
@@ -395,10 +363,9 @@ compute1: </strong>
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmLevel -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_tonly/WES_allTumorBAM.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_tonly -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
     # Step 6.5 (Merge arm-level files to one file) # 
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmmerge -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_tonly -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
-
-<strong> WES paired (aka tumor-normal) CNV calling example commands for
-compute1: </strong>
-
+```
+**WES paired (aka tumor-normal) CNV calling example commands for compute1:**
+```
     # Step 1 (precall)
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p precall -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_pair/WES_allTumorBAM.list -M /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_pair/WES_normalBAM.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_pair/ -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
     # Step 2 (PON)
@@ -419,10 +386,9 @@ compute1: </strong>
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmLevel -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_pair/WES_allTumorBAM.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_pair -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
     # Step 6.5 (Merge arm-level files to one file) # 
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmmerge -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wes_pair -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
-
-<strong> WGS un-paired (aka tumor-only) CNV calling example commands for
-compute1: </strong>
-
+```
+**WGS un-paired (aka tumor-only) CNV calling example commands for compute1:**
+```
     # Step 1 (precall)
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.wgs.cnv.compute1.sh -p precall -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_tonly/WGS_CNV_gatk_allTumorBam.list -M /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_tonly/WGS_CNV_gatk_normalBam.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_tonly -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
     # Step 2 (PON)
@@ -443,10 +409,9 @@ compute1: </strong>
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmLevel -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_tonly/WGS_CNV_gatk_allTumorBam.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_tonly -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
     # Step 6.5 (Merge arm-level files to one file) # 
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmmerge -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_tonly -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
-
-<strong> WGS paired (aka tumor-normal) CNV calling example commands for
-compute1: </strong>
-
+```
+**WGS paired (aka tumor-normal) CNV calling example commands for compute1:**
+```
     # Step 1 (precall)
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.wgs.cnv.compute1.sh -p precall -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_pair/WGS_CNV_gatk_pairedBam.list -M /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_pair/WGS_CNV_gatk_normalBam.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_pair -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
     # Step 2 (PON)
@@ -467,7 +432,7 @@ compute1: </strong>
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmLevel -t /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_pair/WGS_CNV_gatk_pairedBam.list -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_pair -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
     # Step 6.5 (Merge arm-level files to one file) # 
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p chrarmmerge -o /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/test_run_v1.1/wgs_pair -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
-
+```
 ## Output Files
 
 **Area under construction! Hard hats required!**</br> This pipeline will
@@ -477,9 +442,9 @@ ensure that each step of the pipeline was successfully completed. If on
 sample fails but the rest are successfuly, then the pipeline can
 continue to be run provided that the problem sample is removed from the
 bam.list and normalBam.list file. The output file
-merged.gene_level.from_seg.hg38.log2ratio.tsv will contain a matrix
+`merged.gene_level.from_seg.hg38.log2ratio.tsv` will contain a matrix
 (tsv) of tumor cnv calls. The columns are samples and the rows are
-genes. The output file merged.segment_level.hg38.log2ratio.tsv contains
+genes. The output file `merged.segment_level.hg38.log2ratio.tsv` contains
 the all of the segment calls for each sample. It is formatted as
 follows:
 
@@ -519,9 +484,9 @@ sometimes cutoff in the `CaseID_PlotModeledSegments_complete.pdf`. That
 said if you open the `CaseID_PlotModeledSegments_complete.pdf` file in
 adobe illustrator you will find that the legend is still there. It just
 gets cut off by the boundaries of the pdf artboard.
-
+```
     bash /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/gatk_somatic.cnv.compute1.sh -p plotFinal -t /storage1/fs1/dinglab/Active/Projects/austins2/snv_project/cnv/HTAN/freeze_v2_2024-07-23/v2_WES_geneTumorBAM.list -o /storage1/fs1/dinglab/Active/Projects/austins2/snv_project/cnv/HTAN/freeze_v2_2024-07-23/ -c /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/config/config.gatk4scna.compute1.ini
-
+```
 ## Troubleshooting
 
 If you have had issues using this pipeline, then please indicate below
@@ -535,17 +500,17 @@ the src folder that is listed in the scriptDir of the wrapper script to
 your working directory. You can then edit the scripts in that copied
 folder.
 
-<strong>Step 1 fail exit code 137 on compute1</strong>  
+**Step 1 fail exit code 137 on compute1** 
 After running each step it is a good idea to use
 `grep "Exited with" logs/*` to make sure that all prior steps
 successfully completed. There was one instance where step 1 threw an
 error code 137.
-
+```
     [a.n.southard-smith@compute1-client-4 CNV]$ grep "Exited with" logs/*
     logs/gatk4cn.s1.C3N-01366.WGS.T.log:Exited with exit code 137.
     logs/gatk4cn.s1.C3N-02256.WGS.T.log:Exited with exit code 137.
     logs/gatk4cn.s1.C3N-02599.WGS.T.log:Exited with exit code 137.
-
+```
 According to the [IBM
 documentation](https://www.ibm.com/docs/en/spectrum-lsf/10.1.0?topic=SSWRJV_10.1.0/best_practices/Enforcing%20job%20memory%20and%20swap%20with%20Linux%20cgroups.html)
 this means that the job was killed due to it reaching a memory limit
@@ -561,7 +526,7 @@ that Java now requests 6G of memory instead of 4G. For this line 57 was
 changed from `-Xmx4g -jar ${GATK} CollectReadCounts \` to
 `-Xmx6g -jar ${GATK} CollectReadCounts \`.
 
-<strong> Permission denied for BAM file at step 5 </strong>  
+**Permission denied for BAM file at step 5** 
 Step 5 does not need the BAM file(s) for each case and should not be
 trying to access them. It only neads the CaseID from each line. It has
 been found that step 5 in particular does not appropriately separate out
@@ -571,8 +536,7 @@ the input files are tab separated as this solves the problem. This can
 be quickly done by
 `awk '{printf("%s\t%s\t%s\t%s\n",$1,$2,$3,$4);}' /path/to/your/current/input/bam.list > /path/to/new/tab/separated/bam.list`
 
-<strong> Step 3/3.5 does not generate output files for all samples
-</strong>  
+**Step 3/3.5 does not generate output files for all samples** 
 There are a number of possible reasons for this to occur. The first
 thing to check is that all of the input file paths are correct. If you
 are running the tumor-only version of the pipeline you need to check

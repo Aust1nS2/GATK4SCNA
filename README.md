@@ -13,6 +13,8 @@ tumor samples with or without paired normals as it relies upon a panel
 of normals generated from normal samples generated via the same
 sequencing methodology.
 
+Additionally, this pipeline is an updated version of the one written [here](https://github.com/ding-lab/GATK4SCNA). The prior version written by Hua was intended for use on a compute cluster that no longer exists.
+
 ## Dependencies
 
 This pipeline has two version, one for WGS and one for WES. The pipeline
@@ -31,6 +33,8 @@ pipelines:
 
     WGS:
     /storage1/fs1/dinglab/Active/Projects/austins2/tools/GATK4SCNA/wgs/config/config.gatk4scna.wgs.compute1.ini
+
+Additionally this tool is written for use on an compute server running the IBM LSF job handler. To use on a different platform you will need to modify how the `lsf_submit.sh` and `gatk_somatic.cnv.compute1` scripts handle job submissions.
 
 ### Software
 

@@ -345,6 +345,8 @@ specified then only those contigs will be included in the output plot.
 
 ## Example Commands
 
+In order to run this yourself you will need to alter the paths saved in the `scriptDir` and `submitJob` variables saved in the `gatk_somatic.cnv.compute1.sh` and/or `gatk_somatic.wgs.cnv.compute1.sh` to point to the install location where you downloaded this github repo.
+
 **WES un-paired (aka tumor-only) CNV calling example commands for compute1:**
 ```
     # Step 1 (precall)

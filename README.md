@@ -13,7 +13,7 @@ tumor samples with or without paired normals as it relies upon a panel
 of normals generated from normal samples generated via the same
 sequencing methodology.
 
-Additionally, this pipeline is an updated version of the one written [here](https://github.com/ding-lab/GATK4SCNA). The prior version written by Hua was intended for use on a compute cluster that no longer exists.
+Additionally, this pipeline is a modified and updated version of the one written [here](https://github.com/ding-lab/GATK4SCNA). The prior version written by Hua was intended for use on a compute cluster that no longer exists.
 
 ## Dependencies
 

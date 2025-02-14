@@ -303,12 +303,12 @@ such:
 |----|----|----|
 | Case1 | /path/to/Case1_normal.bam | Normal_ID_for_Case1 |
 | Case3-sample1 | /path/to/Case3-sample1-by-a-different-name_normal.bam | Normal_ID_for_Case3 |
-| Case3-sample2 | /path/to/Case3-sample2_normal.bam | Normal_ID_for_Case3 |
+
 
 The TumorID file for the normalBam.list file must be identical to the
-TumorID provided in the bam.list file that is provided. In the case
+TumorID provided in the bam.list file that is provided. *In the case
 where multiple samples rely on the same normal bam file then only one
-entry needs to be provided. The normalBam.list file is mostly used for
+entry needs to be provided.* The normalBam.list file is mostly used for
 QC purposes by generating CNV calls on the normal bams. In the event
 that a tumor sample does not have an associated normal then it can be
 excluded from the normalBam.list file.
